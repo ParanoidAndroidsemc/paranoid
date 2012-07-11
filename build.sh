@@ -98,11 +98,6 @@ case "$EXTRAS" in
        make clean > /dev/null;;
    forceupdate)
        rm paranoid/.manifest;;
-
-   # If our script is called by java apps, we cannot use internet functions
-   java)
-       echo -e "${cya}Building via Java application - Internet functions disabled ${txtrst}"
-       JAVA="true";;
 esac
 
 # if our device doesn't have defined manifest, we copy the entire list of vendors and device trees to attempt a build
@@ -116,7 +111,7 @@ then
 fi
 
 # decide manifest to copy
-if [ ! -f paranoid/.manifest ] && [ "$JAVA" != "true" ]
+if [ ! -f paranoid/.manifest ]
 then
     echo -e ""
     echo -e "${bldblu}Copying device manifest ${txtrst}"
@@ -137,7 +132,7 @@ cd ./../..
 
 # sync with latest sources
 echo -e ""
-if [ "$SYNC" == "true" ] && [ "$loadmanifest" != "true" ] && [ "$JAVA" != "true" ]
+if [ "$SYNC" == "true" ] && [ "$loadmanifest" != "true" ]
 then
    echo -e "${bldblu}Fetching latest sources ${txtrst}"
    repo sync -j"$THREADS"
