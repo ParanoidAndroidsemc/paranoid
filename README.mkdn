@@ -37,6 +37,7 @@ There are also a few parameters that you can use together with before mentioned:
 
 * threads: Allows to choose a number of threads for syncing operation
 * clean: Removes intermediates and output files
+* forceupdate: Forces to get latest sources for selected device. Must be used if you're compiling for a new device
 
 The usage is the same
     
@@ -50,5 +51,3 @@ Contribute with the project
 ---------------------------
 
 We're an open source project, and we're open to suggestions. Feel free to sumbit pull requests to our git
-
-

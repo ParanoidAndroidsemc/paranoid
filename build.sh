@@ -81,8 +81,9 @@ case "$DEVICE" in
        device="toroplus"
        echo -e "${cya}Building ${bldcya}ParanoidAndroid v$VERSION ${txtrst}${cya}for Sprint Samsung Galaxy Nexus ${txtrst}";;
    *)
-       echo -e "${bldred}Wrong input, please select a valid device ${txtrst}"
-       exit;;
+       echo -e "${bldred}Wrong input, switching to manual build ${txtrst}"
+       echo -e ""
+       device=$DEVICE;;
 esac
 
 # decide what command to execute
@@ -95,7 +96,37 @@ case "$EXTRAS" in
        echo -e ""
        echo -e "${bldblu}Cleaning intermediates and output files ${txtrst}"
        make clean > /dev/null;;
+   forceupdate)
+       rm paranoid/.manifest;;
+
+   # If our script is called by java apps, we cannot use internet functions
+   java)
+       echo -e "${cya}Building via Java application - Internet functions disabled ${txtrst}"
+       JAVA="true";;
 esac
+
+# if our device doesn't have defined manifest, we copy the entire list of vendors and device trees to attempt a build
+if [ ! -f paranoid/manifests/"${device}_manifest.xml" ]
+then
+    echo -e ""
+    echo -e "${bldblu}Device manifest not found, fetching list ${txtrst}"
+    cp paranoid/manifests/full_manifest.xml .repo/local_manifest.xml
+    repo sync -j"$THREADS"
+    touch paranoid/.manifest
+fi
+
+# decide manifest to copy
+if [ ! -f paranoid/.manifest ] && [ "$JAVA" != "true" ]
+then
+    echo -e ""
+    echo -e "${bldblu}Copying device manifest ${txtrst}"
+    cp paranoid/manifests/"${device}_manifest.xml" .repo/local_manifest.xml
+    loadmanifest="true"
+    echo -e ""
+    echo -e "${bldblu}Syncing device sources ${txtrst}"
+    repo sync -j"$THREADS"
+    touch paranoid/.manifest
+fi
 
 # download prebuilt files
 echo -e ""
@@ -106,7 +137,7 @@ cd ./../..
 
 # sync with latest sources
 echo -e ""
-if [ "$SYNC" == "true" ]
+if [ "$SYNC" == "true" ] && [ "$loadmanifest" != "true" ] && [ "$JAVA" != "true" ]
 then
    echo -e "${bldblu}Fetching latest sources ${txtrst}"
    repo sync -j"$THREADS"
