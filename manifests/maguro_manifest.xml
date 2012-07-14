@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <project name="CyanogenMod/android_device_samsung_maguro" path="device/samsung/maguro" revision="ics" />
+  <project name="CyanogenMod/android_device_samsung_maguro" path="device/samsung/maguro" revision="jellybean" />
 </manifest>
